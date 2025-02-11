@@ -1,29 +1,81 @@
 // netlify/functions/response.js
 exports.handler = async (event, context) => {
-    // Check if it's a POST request
-    if (event.httpMethod === 'POST') {
-        try {
-            // Parse the body of the request (which should contain the response from the user)
-            const { response } = JSON.parse(event.body);
+  // Set CORS headers
+  const headers = {
+    'Access-Control-Allow-Origin': '*', // Replace * with your domain in production
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS'
+  };
 
-            // You can log the response to the console (visible in the Netlify function logs)
-            console.log('User response:', response);
+  // Handle preflight requests
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 204,
+      headers
+    };
+  }
 
-            // Respond with a success message
-            return {
-                statusCode: 200,
-                body: JSON.stringify({ message: 'Response received', response: response }),
-            };
-        } catch (error) {
-            return {
-                statusCode: 500,
-                body: JSON.stringify({ message: 'Error parsing request', error: error.message }),
-            };
-        }
-    } else {
-        return {
-            statusCode: 405,
-            body: JSON.stringify({ message: 'Method Not Allowed' }),
-        };
+  // Only allow POST requests
+  if (event.httpMethod !== 'POST') {
+    return {
+      statusCode: 405,
+      headers,
+      body: JSON.stringify({ error: 'Method not allowed' })
+    };
+  }
+
+  try {
+    // Parse and validate the request body
+    let data;
+    try {
+      data = JSON.parse(event.body);
+    } catch (e) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ error: 'Invalid JSON body' })
+      };
     }
+
+    // Validate response value
+    if (!data.response || !['yes', 'no'].includes(data.response.toLowerCase())) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ error: 'Invalid response value. Must be "yes" or "no"' })
+      };
+    }
+
+    // Create a log entry object
+    const logEntry = {
+      response: data.response.toLowerCase(),
+      timestamp: new Date().toISOString(),
+      userAgent: event.headers['user-agent'] || 'Unknown',
+      ipAddress: event.headers['client-ip'] || event.headers['x-forwarded-for'] || 'Unknown',
+      referrer: event.headers['referer'] || 'Unknown'
+    };
+
+    // Log the response (this will appear in your Netlify function logs)
+    console.log('Valentine Response:', JSON.stringify(logEntry));
+
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({ 
+        message: 'Response logged successfully',
+        timestamp: logEntry.timestamp
+      })
+    };
+
+  } catch (error) {
+    console.error('Error logging response:', error);
+    
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({ 
+        error: 'Failed to log response'
+      })
+    };
+  }
 };
