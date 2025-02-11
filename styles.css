@@ -1,0 +1,233 @@
+.initially-hidden {
+    display: none !important;
+}
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600;700&family=Caveat:wght@600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(45deg, #ff8db3, #ff5c8f, #ff85b2, #ff61a6);
+    background-size: 400% 400%;
+    animation: backgroundFlow 20s ease infinite;
+    perspective: 1000px;
+    overflow: hidden;
+}
+
+@keyframes backgroundFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.background-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.floating-heart {
+    position: absolute;
+    font-size: 30px;
+    opacity: 0;
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+}
+
+.love-particle {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    background: rgba(255,255,255,0.6);
+    border-radius: 50%;
+    opacity: 0;
+}
+
+.floating-curve {
+    position: absolute;
+    width: 200px;
+    height: 2px;
+    background: rgba(255,255,255,0.2);
+    opacity: 0;
+    filter: blur(1px);
+}
+
+.container {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 50px 70px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 40px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    border: 10px solid #ff61a6;
+    max-width: 700px;
+    width: 95%;
+}
+
+h1 {
+    font-family: 'Dancing Script', cursive;
+    font-size: 3.5em;
+    color: #ff4b8d;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    animation: titleWave 2s ease-in-out infinite;
+}
+
+@keyframes titleWave {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-10px) rotate(2deg); }
+}
+
+.btn-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 30px 0;
+}
+
+.btn {
+    padding: 15px 40px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 1.2em;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.yes-btn {
+    background: linear-gradient(45deg, #ff61a6, #ff85b2);
+    color: white;
+}
+
+.no-btn {
+    background: linear-gradient(45deg, #ff4b5c, #ff6f7f);
+    color: white;
+}
+
+.btn:hover {
+    transform: scale(1.1) translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(255,255,255,0.2), transparent);
+    transform: translateX(-100%);
+    transition: 0.5s;
+    z-index: -1;
+}
+
+.btn:hover::before {
+    transform: translateX(100%);
+}
+
+#response {
+    font-size: 1.5em;
+    margin-top: 20px;
+    font-weight: 600;
+    opacity: 0;
+    transition: all 0.5s ease;
+}
+
+.hearts {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.heart {
+    position: absolute;
+    font-size: 20px;
+    animation: floatHeart 4s ease-in infinite;
+    opacity: 0;
+}
+
+@keyframes floatHeart {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+}
+
+.confetti {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.confetti-piece {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #ffd700;
+    top: -20px;
+    opacity: 0;
+}
+.gif-container {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;  /* Keep it behind everything */
+    display: none !important;  /* Force hidden by default */
+}
+
+.gif-container.show {
+    display: block !important;  /* Force visible only when show class is present */
+    z-index: 5;  /* Bring it above background but below content */
+}
+
+.gif {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    display: none !important;  /* Force hidden by default */
+}
+
+.gif-container.show .gif {
+    display: block !important;  /* Show only when container is shown */
+}
+
+.gif-1 {
+    top: 10%;
+    left: 5%;
+}
+
+.gif-2 {
+    top: 20%;
+    right: 5%;
+}
+
+.gif-3 {
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+}
